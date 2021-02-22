@@ -22,6 +22,14 @@ def show_listings():
     # retrieve the value of the input named country
     country = request.args.get('country')
     min_beds = request.args.get('min_beds')
+    page = request.args.get('page')
+
+    # if page contains None, convert it to 0
+    if page is None:
+        page = 0
+    else:
+        # else, convert the string inside page to an integer
+        page = int(page)
 
     critera = {}
 
@@ -33,16 +41,16 @@ def show_listings():
             "$gte": int(min_beds)
         }
 
-    print(critera)
-
     listings = db.listingsAndReviews.find(critera, {
         'name': 1,
         'summary': 1,
         'images': 1,
         'address': 1,
         'beds': 1
-    }).limit(20)
-    return render_template('listings.template.html', listings=listings)
+    }).skip(page*20).limit(20)
+    return render_template('listings.template.html',
+                           listings=listings, page=page,
+                           fullpath=request.full_path)
 
 
 # "magic code" -- boilerplate

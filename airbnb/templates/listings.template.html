@@ -26,6 +26,15 @@
             <input type="submit" value="Search" class="btn btn-primary mt-3"/>
         </form>
 
+        <div>
+            {% if page != 0 %}
+                <a href="?page={{page-1}}" class="btn btn-primary">Previous Page</a>
+            {% endif %}
+            
+                <a href="?page={{page+1}}" class="btn btn-primary">Next Page</a>
+            
+        </div>
+
 
         <div style="display:flex;flex-wrap:wrap">
         {%for listing in listings %}
