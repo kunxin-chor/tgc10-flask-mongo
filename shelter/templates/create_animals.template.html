@@ -1,0 +1,38 @@
+{% extends 'base.template.html'%}
+
+{%block content%}
+<h1>Add new animal</h1>
+<form method="POST">
+    <div>
+        <label class="form-label">Name:</label>
+        <input type="text" name="name" class="form-control"/>
+    </div>  
+    <div>
+        <label class="form-label">Age: </label>
+        <input type="text" name="age" class="form-control"/>
+    </div>
+    <div>
+        <label class="form-label">Breed: </label>
+        <select name="breed" class="form-control">
+            <option>Golden Retriever</option>
+            <option>German Shepherd</option>
+            <option>Yellow Tabby</option>
+            <option>Holland Lop</option>
+        </select>      
+    </div>
+    <div>
+        <label class="form-label">Type</label>
+        <select name="type" class="form-control">
+            <option>Dog</option>
+            <option>Cat</option>
+            <option>Rabbit</option>
+        </select>
+
+    </div>
+    <input type="submit" value="Create" class="mt-3 btn btn-primary"/>
+
+
+
+</form>
+
+{%endblock%}

@@ -1,0 +1,25 @@
+{% extends 'base.template.html' %}
+
+{% block content%}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Breed</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+
+    {%for each_animal in animals %}
+    <tr>
+        <td>{{each_animal.name}}</td>
+        <td>{{each_animal.age}}</td>
+        <td>{{each_animal.breed}}</td>
+        <td>{{each_animal.type}}</td>
+    </tr>
+
+    {%endfor%}
+</table>
+
+{% endblock %}
