@@ -22,7 +22,10 @@
         <td>{{each_animal.age}}</td>
         <td>{{each_animal.breed}}</td>
         <td>{{each_animal.type}}</td>
-        <td><a href="{{ url_for('delete_animal', animal_id=each_animal._id )}}" class="btn btn-danger">Delete</a></td>
+        <td>
+            <a href="{{ url_for('delete_animal', animal_id=each_animal._id )}}" class="btn btn-danger">Delete</a>
+            <a href="{{ url_for('show_update_animal', animal_id=each_animal._id)}}" class="btn btn-success">Update</a>
+        </td>
     </tr>
 
     {%endfor%}

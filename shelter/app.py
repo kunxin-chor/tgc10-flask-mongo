@@ -9,6 +9,9 @@ from bson.objectid import ObjectId
 load_dotenv()
 
 app = Flask(__name__)
+# assign a secret key to setup sessions
+app.secret_key = os.environ.get('SECRET_KEY')
+
 MONGO_URI = os.environ.get('MONGO_URI')
 DB_NAME = 'tgc10_new_shelter'
 
@@ -41,7 +44,7 @@ def process_create_animals():
         "breed": breed,
         "type": animal_type
     })
-
+    flash("New animal has been created successfully!")
     return redirect(url_for('show_all_animals'))
 
 
@@ -61,6 +64,7 @@ def process_delete_animal(animal_id):
     db.animals.remove({
         "_id": ObjectId(animal_id)
     })
+    flash("Animal has been deleted")
     return redirect(url_for('show_all_animals'))
 
 
@@ -80,8 +84,9 @@ def process_update_animal(animal_id):
     }, {
         '$set': request.form
     })
+    flash("Animal has been updated successfully.")
     return redirect(url_for('show_all_animals'))
 
 
 if __name__ == '__main__':
-    app.run(host=os.environ.get('IP'), port=os.environ.get('PORT'), debug=True)
+    app.run(host=os.environ.get('IP'), port=os.environ.get('PORT'), debug=False)
