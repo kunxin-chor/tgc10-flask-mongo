@@ -1,0 +1,37 @@
+{% extends 'base.template.html'%}
+
+{%block content%}
+<h1>Updating Animal: {{animal_to_edit.name}}</h1>
+<form method="POST">
+    <div>
+        <label class="form-label">Name:</label>
+        <input type="text" name="name" value="{{animal_to_edit.name}}" class="form-control"/>
+    </div>  
+    <div>
+        <label class="form-label">Age: </label>
+        <input type="text" name="age" value="{{animal_to_edit.age}}" class="form-control"/>
+    </div>
+    <div>
+        <label class="form-label">Breed: </label>
+        <select name="breed" class="form-control">
+            {%for b in all_breeds %}
+            <option {%if animal_to_edit.breed == b.name %}selected{%endif%}>{{b.name}}</option>
+            {%endfor%}
+        </select>      
+    </div>
+    <div>
+        <label class="form-label">Type</label>
+        <select name="type" class="form-control">
+            <option {%if animal_to_edit.type == 'Dog'%} selected{%endif%}>Dog</option>
+            <option {%if animal_to_edit.type == 'Cat'%} selected{%endif%}>Cat</option>
+            <option {%if animal_to_edit.type == 'Rabbit'%} selected{%endif%}>Rabbit</option>
+        </select>
+
+    </div>
+    <input type="submit" value="Update" class="mt-3 btn btn-primary"/>
+
+
+
+</form>
+
+{%endblock%}
