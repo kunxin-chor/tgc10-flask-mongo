@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 from dotenv import load_dotenv
 import pymongo
+import datetime
 
 # we can use ObjectId
 from bson.objectid import ObjectId
@@ -91,6 +92,57 @@ def process_update_animal(animal_id):
     flash("Animal has been updated successfully.")
     return redirect(url_for('show_all_animals'))
 
+
+@app.route('/animals/<animal_id>/checkups')
+def show_animal_checkups(animal_id):
+    animal = db.animals.find_one({
+        "_id": ObjectId(animal_id)
+    })
+    return render_template('show_animal_checkups.template.html',
+                           animal=animal)
+
+
+@app.route('/animals/<animal_id>/checkups/create')
+def show_add_checkup(animal_id):
+    animal = db.animals.find_one({
+        "_id": ObjectId(animal_id)
+    })
+    return render_template('add_checkup.template.html', animal=animal)
+
+
+@app.route('/animals/<animal_id>/checkups/create', methods=['POST'])
+def process_add_checkup(animal_id):
+    db.animals.update_one({
+        "_id": ObjectId(animal_id)
+    }, {
+        "$push": {
+            "checkups": {
+                'checkup_id': ObjectId(),
+                "vet": request.form.get('vet_name'),
+                "diagnosis": request.form.get('diagnosis'),
+                "treatment": request.form.get('treatment'),
+                "date": datetime.datetime.strptime(request.form.get('date'),
+                                                   '%Y-%m-%d')
+            }
+        }
+    })
+    flash("New checkup added!")
+    return redirect(url_for('show_animal_checkups', animal_id=animal_id))
+
+
+@app.route('/animal/<animal_id>/checkups/<checkup_id>/delete')
+def delete_checkup(animal_id, checkup_id):
+    db.animals.update_one({
+        "checkups.checkup_id": ObjectId(checkup_id)
+    }, {
+        '$pull': {
+            'checkups': {
+                'checkup_id': ObjectId(checkup_id)
+            }
+        }
+    })
+    flash("Checkup deleted")
+    return redirect(url_for('show_animal_checkups', animal_id=animal_id))
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
