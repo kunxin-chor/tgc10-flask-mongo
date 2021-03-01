@@ -1,0 +1,18 @@
+{%extends 'base.template.html'%}
+
+{%block content%}
+<h1>Managing Checkups for {{animal.name}}</h1>
+<a href="{{ url_for('show_add_checkup', animal_id=animal._id) }}" class="btn btn-primary">Add Checkup</a>
+
+{% for c in animal.checkups %}
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{c.diagnosis}}</h5>
+    <h4>{{c.date}}</h4>
+    <p class="card-text">{{c.treatment}}</p>
+    <a href="{{ url_for('delete_checkup', animal_id=animal._id, checkup_id=c.checkup_id)}}" class="btn btn-danger">Delete checkup</a>
+  </div>
+</div>
+{% endfor %}
+
+{%endblock%}

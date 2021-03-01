@@ -1,0 +1,35 @@
+{% extends 'base.template.html' %}
+
+{% block content%}
+<h1>Animals</h1>
+
+<a href="{{url_for('show_create_animals')}}" class="btn btn-primary mb-2 mt-2">Add animal</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Breed</th>
+            <th>Type</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    {%for each_animal in animals %}
+    <tr>
+        <td>{{each_animal.name}}</td>
+        <td>{{each_animal.age}}</td>
+        <td>{{each_animal.breed}}</td>
+        <td>{{each_animal.type}}</td>
+        <td>
+            <a href="{{ url_for('delete_animal', animal_id=each_animal._id )}}" class="btn btn-danger">Delete</a>
+            <a href="{{ url_for('show_update_animal', animal_id=each_animal._id)}}" class="btn btn-success">Update</a>
+            <a href="{{ url_for('show_animal_checkups', animal_id=each_animal._id) }}" class="btn btn-success">Manage Checkups</a>
+        </td>
+    </tr>
+
+    {%endfor%}
+</table>
+
+{% endblock %}

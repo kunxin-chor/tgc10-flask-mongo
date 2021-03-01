@@ -1,0 +1,17 @@
+{%extends 'base.template.html'%}
+
+{%block content %}
+<form method="POST">
+    <div class="alert alert-danger">
+        Are you sure you want to delete {{animal_to_delete.name}}?
+    </div>
+    <div>
+        <input type="submit" value="Delete" class="btn btn-danger"/>
+        <a href="{{ url_for('show_all_animals')}}" class="btn btn-success">No, don't delete</a>
+    </div>
+
+
+</form>
+
+
+{%endblock%}
