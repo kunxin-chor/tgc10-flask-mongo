@@ -30,25 +30,51 @@ def show_all_animals():
 def show_create_animals():
     all_breeds = db.animal_breeds.find()
     return render_template('create_animals.template.html',
-                           all_breeds=all_breeds)
+                           all_breeds=all_breeds, old_values={})
 
 
 @app.route('/animals/create', methods=["POST"])
 def process_create_animals():
+    # name cannot be blank (i.e, empty)
     name = request.form.get('name')
     breed = request.form.get('breed')
-    age = float(request.form.get('age'))
+    # cannot be less than 0, maybe could be measured in months
+    age = request.form.get('age')
     animal_type = request.form.get('type')
 
+    # validation
+    # we use a dictionary to store all the errors
+    errors = {}
+
+    if len(name) == 0:
+        # the key of the key/value pair is the type of the error
+        # and the value is what we want to display to the user
+        errors['name_is_blank'] = "Animal name cannot be blank"
+
+    if len(age) == 0:
+        errors['age_is_blank'] = "Age cannot be blank"
+
+    # we do the next check only if age is not blank
+    if len(age) > 0 and float(age) < 0:
+        errors['age_is_less_than_0'] = "Animal age cannot be less than zero"
+
     # insert only ONE new document
-    db.animals.insert_one({
-        "name": name,
-        "age": age,
-        "breed": breed,
-        "type": animal_type
-    })
-    flash("New animal has been created successfully!")
-    return redirect(url_for('show_all_animals'))
+    if len(errors) == 0:
+        db.animals.insert_one({
+            "name": name,
+            "age": float(age),
+            "breed": breed,
+            "type": animal_type
+        })
+        flash("New animal has been created successfully!")
+        return redirect(url_for('show_all_animals'))
+    else:
+        # redisplay the create animal form template if there is an error
+        # we also pass in the errors to the template as well
+        all_breeds = db.animal_breeds.find()
+        return render_template('create_animals.template.html',
+                               all_breeds=all_breeds, errors=errors,
+                               old_values=request.form)
 
 
 @app.route('/animals/<animal_id>/delete')
@@ -73,6 +99,7 @@ def process_delete_animal(animal_id):
 
 @app.route('/animals/<animal_id>/update')
 def show_update_animal(animal_id):
+
     all_breeds = db.animal_breeds.find()
     animal_to_edit = db.animals.find_one({
         '_id': ObjectId(animal_id)
@@ -84,13 +111,54 @@ def show_update_animal(animal_id):
 
 @app.route('/animals/<animal_id>/update', methods=["POST"])
 def process_update_animal(animal_id):
-    db.animals.update_one({
-        "_id": ObjectId(animal_id)
-    }, {
-        '$set': request.form
-    })
-    flash("Animal has been updated successfully.")
-    return redirect(url_for('show_all_animals'))
+
+    # name cannot be blank (i.e, empty)
+    name = request.form.get('name')
+    breed = request.form.get('breed')
+    # cannot be less than 0, maybe could be measured in months
+    age = request.form.get('age')
+    animal_type = request.form.get('type')
+
+    # validation
+    # we use a dictionary to store all the errors
+    errors = {}
+
+    if len(name) == 0:
+        # the key of the key/value pair is the type of the error
+        # and the value is what we want to display to the user
+        errors['name_is_blank'] = "Animal name cannot be blank"
+
+    if len(age) == 0:
+        errors['age_is_blank'] = "Age cannot be blank"
+
+    # we do the next check only if age is not blank
+    if len(age) > 0 and float(age) < 0:
+        errors['age_is_less_than_0'] = "Animal age cannot be less than zero"
+
+    if len(errors) == 0:
+        db.animals.update_one({
+            "_id": ObjectId(animal_id)
+        }, {
+            '$set': {
+                "name": name,
+                "age": float(age),
+                "breed": breed,
+                "type": type
+            }
+        })
+        flash("Animal has been updated successfully.")
+        return redirect(url_for('show_all_animals'))
+    else:
+     
+        all_breeds = db.animal_breeds.find()
+        animal_to_edit = db.animals.find_one({
+            '_id': ObjectId(animal_id)
+        })
+        old_values = {**animal_to_edit, **request.form}
+        return render_template('show_update_animal.template.html',
+                               animal_to_edit=old_values,
+                               all_breeds=all_breeds,
+                               errors=errors)
 
 
 @app.route('/animals/<animal_id>/checkups')
@@ -143,6 +211,7 @@ def delete_checkup(animal_id, checkup_id):
     })
     flash("Checkup deleted")
     return redirect(url_for('show_animal_checkups', animal_id=animal_id))
+
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),

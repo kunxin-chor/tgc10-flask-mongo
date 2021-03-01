@@ -2,29 +2,39 @@
 
 {%block content%}
 <h1>Add new animal</h1>
+
+{%if errors|length > 0 %}
+<div class="alert alert-danger">
+    {% for e in errors.values() %}
+        <li>{{e}}</li>
+    {% endfor %}
+</div>
+
+{%endif%}
+
 <form method="POST">
     <div>
         <label class="form-label">Name:</label>
-        <input type="text" name="name" class="form-control"/>
+        <input type="text" name="name" value="{{old_values.name}}" class="form-control"/>
     </div>  
     <div>
         <label class="form-label">Age: </label>
-        <input type="text" name="age" class="form-control"/>
+        <input type="text" name="age" value="{{old_values.age}}" class="form-control"/>
     </div>
     <div>
         <label class="form-label">Breed: </label>
         <select name="breed" class="form-control">
             {%for b in all_breeds %}
-            <option>{{b.name}}</option>
+            <option {%if old_values.breed == b.name%} selected {%endif%}>{{b.name}}</option>
             {%endfor%}
         </select>      
     </div>
     <div>
         <label class="form-label">Type</label>
         <select name="type" class="form-control">
-            <option>Dog</option>
-            <option>Cat</option>
-            <option>Rabbit</option>
+            <option {% if old_values.type=="Dog" %} selected {%endif%}>Dog</option>
+            <option {% if old_values.type=="Dog" %} selected {%endif%}>Cat</option>
+            <option {% if old_values.type=="Dog" %} selected {%endif%}>Rabbit</option>
         </select>
 
     </div>

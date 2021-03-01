@@ -1,6 +1,16 @@
 {% extends 'base.template.html'%}
 
 {%block content%}
+
+{%if errors|length > 0 %}
+<div class="alert alert-danger">
+    {% for e in errors.values() %}
+        <li>{{e}}</li>
+    {% endfor %}
+</div>
+
+{%endif%}
+
 <h1>Updating Animal: {{animal_to_edit.name}}</h1>
 <form method="POST">
     <div>
