@@ -56,7 +56,8 @@ def show_all_animals():
 def show_create_animals():
     all_breeds = db.animal_breeds.find()
     return render_template('create_animals.template.html',
-                           all_breeds=all_breeds, old_values={})
+                           all_breeds=all_breeds, old_values={},
+                           errors={})
 
 
 @app.route('/animals/create', methods=["POST"])
@@ -111,8 +112,9 @@ def show_update_animal(animal_id):
         '_id': ObjectId(animal_id)
     })
     return render_template('show_update_animal.template.html',
-                           animal_to_edit=animal_to_edit,
-                           all_breeds=all_breeds)
+                           old_values=animal_to_edit,
+                           all_breeds=all_breeds,
+                           errors={})
 
 
 @app.route('/animals/<animal_id>/update', methods=["POST"])
@@ -141,7 +143,7 @@ def process_update_animal(animal_id):
         })
         old_values = {**animal_to_edit, **request.form}
         return render_template('show_update_animal.template.html',
-                               animal_to_edit=old_values,
+                               old_values=old_values,
                                all_breeds=all_breeds,
                                errors=errors)
 
